@@ -1,5 +1,5 @@
-numpy==2.5.4
-pandas==3.0.6
+numpy
+pandas
 python-dateutil==2.9.0.post0
-scipy==1.18.1
+scipy
 six==1.17.0
