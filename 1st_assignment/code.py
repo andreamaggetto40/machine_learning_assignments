@@ -1,6 +1,8 @@
 # boilerplate code for loading the data
 import pandas as pd
 from scipy.io import arff
+import matplotlib.pyplot as plt
+import numpy as np
 
 # schizo.arff
 data_path = "data/schizo.arff"
@@ -30,4 +32,12 @@ print("Features amount : " , features_amount)
 features_types = df_schizo.dtypes
 print(features_types)
 
+# target plot
+df_schizo['class'].value_counts().plot.bar(rot = 0)
 
+# histogram/plot of selected input variables 
+fig, axes = plt.subplots(ncols = 2)
+freedman_bins = np.histogram_bin_edges(df_schizo['gain_ratio_1'].dropna(), bins = "fd")
+df_schizo.hist(column = "gain_ratio_1", bins = freedman_bins, grid = False, ax = axes[0])
+df_schizo['target'].value_counts().plot.bar(rot = 0, ax = axes[1])
+plt.show()
