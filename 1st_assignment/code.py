@@ -26,16 +26,8 @@ samples_amount, features_amount = df_schizo.shape
 print("Samples amount : " , samples_amount)
 print("Features amount : " , features_amount)
 
-# Features amount
-
-features_list = list(df_schizo.columns)
-
-print(features_list)
-
 # Features types
-
 features_types = df_schizo.dtypes
-
 print(features_types)
 
 
