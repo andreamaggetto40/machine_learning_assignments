@@ -3,3 +3,4 @@ pandas
 python-dateutil==2.9.0.post0
 scipy
 six==1.17.0
+matplotlib
