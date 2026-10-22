@@ -1,6 +1,12 @@
-# boilerplate code for loading the data
 import pandas as pd
 from scipy.io import arff
+import numpy as np
+import matplotlib.pyplot as plt
+
+# income-adult-predictor
+
+
+
 
 # schizo.arff
 data_path = "data/schizo.arff"
@@ -37,5 +43,7 @@ print(features_list)
 features_types = df_schizo.dtypes
 
 print(features_types)
+
+# Plot of interesting features
 
 
