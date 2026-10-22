@@ -31,7 +31,13 @@ print("Features amount : " , features_amount)
 # Features types
 features_types = df_schizo.dtypes
 print(features_types)
-
+df_schizo['ID']
+print(df_schizo['target'].unique())
+print(df_schizo['class'].unique())
+print(df_schizo['sex'].unique())
+print(df_schizo['ID'].unique())
+print(df_schizo.drop("ID", axis = 1).min(numeric_only = True).min())
+print(df_schizo.drop("ID", axis = 1).max(numeric_only = True).max())
 # target plot
 df_schizo['class'].value_counts().plot.bar(rot = 0)
 
