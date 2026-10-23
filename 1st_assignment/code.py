@@ -18,22 +18,22 @@ print("Samples amount : " , samples_amount)
 print("Features amount : " , features_amount)
 features_types = schizophrenic_data.dtypes
 print(features_types)
-schizophrenic_data['ID']
-print(schizophrenic_data['target'].unique())
-print(schizophrenic_data['class'].unique())
-print(schizophrenic_data['sex'].unique())
-print(schizophrenic_data['ID'].unique())
+schizophrenic_data["ID"]
+print(schizophrenic_data["target"].unique())
+print(schizophrenic_data["class"].unique())
+print(schizophrenic_data["sex"].unique())
+print(schizophrenic_data["ID"].unique())
 print(schizophrenic_data.drop("ID", axis = 1).min(numeric_only = True).min())
 print(schizophrenic_data.drop("ID", axis = 1).max(numeric_only = True).max())
 
 # Target attribute plot
 plt.figure()
-schizophrenic_data['class'].value_counts().plot.bar(rot = 0)
+schizophrenic_data["class"].value_counts().plot.bar(rot = 0)
 plt.ylabel("count")
 
 # histogram/plot of selected input attributes 
 freedman_bins = np.histogram_bin_edges(
-    schizophrenic_data['gain_ratio_1'].dropna(), 
+    schizophrenic_data["gain_ratio_1"].dropna(), 
     bins = "fd"
 )
 plt.figure()
@@ -46,7 +46,7 @@ plt.xlabel("gain_ratio_1")
 plt.ylabel("count")
 
 plt.figure()
-schizophrenic_data['target'].value_counts().plot.bar(rot = 0)
+schizophrenic_data["target"].value_counts().plot.bar(rot = 0)
 plt.ylabel("count")
 
 plt.show()
