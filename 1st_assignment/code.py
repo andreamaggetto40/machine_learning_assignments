@@ -1,49 +1,52 @@
-# boilerplate code for loading the data
 import pandas as pd
 from scipy.io import arff
 import matplotlib.pyplot as plt
 import numpy as np
 
-# schizo.arff
+# Import dataset
 data_path = "data/schizo.arff"
 data, meta = arff.loadarff(data_path)
+schizophrenic_data = pd.DataFrame(data)
 
-df_schizo = pd.DataFrame(data)
+# Minor preprocessing to remove leading and trailing "b" and "'"
+schizophrenic_data[["target", "sex", "class"]] = schizophrenic_data[["target", "sex", "class"]].astype("string")
+schizophrenic_data["target"].str.strip("b'")
 
-'''Ideas for plotting / visualization:
-- Basic information about the dataset (number of samples, number of features, feature names, data types)
-- Target attribute distribution
-- Histogram of the distribution of the target variable (schizo vs. non-schizo)
-- Box plots of the features to visualize their distributions and identify potential outliers
-- Pair plots to visualize relationships between features and the target variable
-- Numerical Input Attributes (Value Ranges & Distributions)
-- Categorical Attributes (Types & Cardinality)
-- Feature Correlations & Relationships
-'''
-
-# Shape of dataset
-
-samples_amount, features_amount = df_schizo.shape
-
+# Dataset properties
+samples_amount, features_amount = schizophrenic_data.shape
 print("Samples amount : " , samples_amount)
 print("Features amount : " , features_amount)
-
-# Features types
-features_types = df_schizo.dtypes
+features_types = schizophrenic_data.dtypes
 print(features_types)
-df_schizo['ID']
-print(df_schizo['target'].unique())
-print(df_schizo['class'].unique())
-print(df_schizo['sex'].unique())
-print(df_schizo['ID'].unique())
-print(df_schizo.drop("ID", axis = 1).min(numeric_only = True).min())
-print(df_schizo.drop("ID", axis = 1).max(numeric_only = True).max())
-# target plot
-df_schizo['class'].value_counts().plot.bar(rot = 0)
+schizophrenic_data['ID']
+print(schizophrenic_data['target'].unique())
+print(schizophrenic_data['class'].unique())
+print(schizophrenic_data['sex'].unique())
+print(schizophrenic_data['ID'].unique())
+print(schizophrenic_data.drop("ID", axis = 1).min(numeric_only = True).min())
+print(schizophrenic_data.drop("ID", axis = 1).max(numeric_only = True).max())
 
-# histogram/plot of selected input variables 
-fig, axes = plt.subplots(ncols = 2)
-freedman_bins = np.histogram_bin_edges(df_schizo['gain_ratio_1'].dropna(), bins = "fd")
-df_schizo.hist(column = "gain_ratio_1", bins = freedman_bins, grid = False, ax = axes[0])
-df_schizo['target'].value_counts().plot.bar(rot = 0, ax = axes[1])
+# Target attribute plot
+plt.figure()
+schizophrenic_data['class'].value_counts().plot.bar(rot = 0)
+plt.ylabel("count")
+
+# histogram/plot of selected input attributes 
+freedman_bins = np.histogram_bin_edges(
+    schizophrenic_data['gain_ratio_1'].dropna(), 
+    bins = "fd"
+)
+plt.figure()
+plt.hist(
+    schizophrenic_data["gain_ratio_1"],
+    bins = freedman_bins, 
+    edgecolor = "black"
+)
+plt.xlabel("gain_ratio_1")
+plt.ylabel("count")
+
+plt.figure()
+schizophrenic_data['target'].value_counts().plot.bar(rot = 0)
+plt.ylabel("count")
+
 plt.show()
