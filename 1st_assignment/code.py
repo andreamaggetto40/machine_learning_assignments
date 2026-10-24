@@ -1,49 +1,57 @@
 import pandas as pd
 from scipy.io import arff
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-# income-adult-predictor
-
-
-
-
-# schizo.arff
+# Import dataset
 data_path = "data/schizo.arff"
 data, meta = arff.loadarff(data_path)
+schizophrenic_data = pd.DataFrame(data)
 
-df_schizo = pd.DataFrame(data)
+# Minor preprocessing to remove leading and trailing "b" and "'"
+schizophrenic_data[["target", "sex", "class"]] = schizophrenic_data[["target", "sex", "class"]].astype("string")
+schizophrenic_data["target"].str.strip("b'")
 
-'''Ideas for plotting / visualization:
-- Basic information about the dataset (number of samples, number of features, feature names, data types)
-- Target attribute distribution
-- Histogram of the distribution of the target variable (schizo vs. non-schizo)
-- Box plots of the features to visualize their distributions and identify potential outliers
-- Pair plots to visualize relationships between features and the target variable
-- Numerical Input Attributes (Value Ranges & Distributions)
-- Categorical Attributes (Types & Cardinality)
-- Feature Correlations & Relationships
-'''
-
-# Shape of dataset
-
-samples_amount, features_amount = df_schizo.shape
-
+# Dataset properties
+samples_amount, features_amount = schizophrenic_data.shape
 print("Samples amount : " , samples_amount)
 print("Features amount : " , features_amount)
-
-# Features amount
-
-features_list = list(df_schizo.columns)
-
-print(features_list)
-
-# Features types
-
-features_types = df_schizo.dtypes
-
+features_types = schizophrenic_data.dtypes
 print(features_types)
+schizophrenic_data["ID"]
+print(schizophrenic_data["target"].unique())
+print(schizophrenic_data["class"].unique())
+print(schizophrenic_data["sex"].unique())
+print(schizophrenic_data["ID"].value_counts())
+print(schizophrenic_data.drop("ID", axis = 1).min(numeric_only = True).min())
+print(schizophrenic_data.drop("ID", axis = 1).max(numeric_only = True).max())
+print(schizophrenic_data.isna().sum())
+print(schizophrenic_data.notna().sum())
 
-# Plot of interesting features
+# Target attribute plot
+plt.figure()
+plt.title("Distribution of class (Target Attribute)")
+schizophrenic_data["class"].value_counts().plot.bar(rot = 0)
+plt.ylabel("count")
 
+# histogram/plot of selected input attributes 
+plt.figure()
+plt.title("Distribution of gain_ratio_1 (Bin Width based on Freedman-Diaconis Rule)")
+freedman_bins = np.histogram_bin_edges(
+    schizophrenic_data["gain_ratio_1"].dropna(), 
+    bins = "fd"
+)
+plt.hist(
+    schizophrenic_data["gain_ratio_1"],
+    bins = freedman_bins, 
+    edgecolor = "black"
+)
+plt.xlabel("gain_ratio_1")
+plt.ylabel("count")
 
+plt.figure()
+plt.title("Distribution of target (Input Attribute)")
+schizophrenic_data["target"].value_counts().plot.bar(rot = 0)
+plt.ylabel("count")
+
+plt.show()
