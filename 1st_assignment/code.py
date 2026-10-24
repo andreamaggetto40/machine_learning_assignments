@@ -5,45 +5,39 @@ import matplotlib.pyplot as plt
 
 # income-adult-predictor
 
+# dataset load
+dataset_path = "data/income-adult-predictor"
+data, meta = arff.loadarff(dataset_path)
 
+# convert to pandas dataframe
+df = pd.DataFrame(data)
 
+# ? = missing value. Pre-processing of the dataset to change ? into NaN
 
-# schizo.arff
-data_path = "data/schizo.arff"
-data, meta = arff.loadarff(data_path)
+df = df.replace("?", np.nan)
 
-df_schizo = pd.DataFrame(data)
+# dataset properties
 
-'''Ideas for plotting / visualization:
-- Basic information about the dataset (number of samples, number of features, feature names, data types)
-- Target attribute distribution
-- Histogram of the distribution of the target variable (schizo vs. non-schizo)
-- Box plots of the features to visualize their distributions and identify potential outliers
-- Pair plots to visualize relationships between features and the target variable
-- Numerical Input Attributes (Value Ranges & Distributions)
-- Categorical Attributes (Types & Cardinality)
-- Feature Correlations & Relationships
-'''
+# sample and features amount
+sample_amount = df.shape[0]
+features_amount = df.shape[1]
 
-# Shape of dataset
-
-samples_amount, features_amount = df_schizo.shape
-
-print("Samples amount : " , samples_amount)
-print("Features amount : " , features_amount)
-
-# Features amount
-
-features_list = list(df_schizo.columns)
-
-print(features_list)
-
-# Features types
-
-features_types = df_schizo.dtypes
-
+# features types
+features_types = df.dtypes
 print(features_types)
 
-# Plot of interesting features
+# unique values for key categorical columns
+print("income unique values", df["income"].unique())
+print("sex unique values:", df["sex"].unique())
+print("workclass unique values:", df["workclass"].unique())
 
+# value counts for income feature
+print("income value counts:", df["income"].value_counts())
 
+# global numerical min and max across all numerical features
+print("Global minimum value across all numerical features:", df.min(numeric_only=True).min())
+print("Global maximum value across all numerical features:", df.max(numeric_only=True).max())
+
+# missing values amount 
+print("missing values amount: " , df.isna().sum())
+print("non-missing values amount : " , df.notna().sum())
