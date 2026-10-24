@@ -41,3 +41,45 @@ print("Global maximum value across all numerical features:", df.max(numeric_only
 # missing values amount 
 print("missing values amount: " , df.isna().sum())
 print("non-missing values amount : " , df.notna().sum())
+
+# plot of income feature distribution
+
+plt.figure(figsize=(6, 4))
+df['income'].value_counts().plot(kind='bar', color=['#4C72B0', '#DD8452'], edgecolor='black')
+plt.title('Target Class Distribution: Income')
+plt.xlabel('Income Category')
+plt.ylabel('Sample Count')
+plt.xticks(rotation=0)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('target_distribution.png', dpi=300)  
+plt.close()                                    
+
+# hours.per.week feature distribution plot
+
+plt.figure(figsize=(8, 4))
+df['hours.per.week'].dropna().hist(bins=20, edgecolor='black', color='skyblue', grid=False)
+plt.title('Distribution of Hours Worked Per Week')
+plt.xlabel('Hours per Week')
+plt.ylabel('Frequency')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('hours_distribution.png', dpi=300)
+plt.close()
+
+# education vs income relationship plot
+
+plt.figure(figsize=(10, 5))
+pd.crosstab(df['education.num'], df['income'], normalize='index').plot(
+    kind='bar', stacked=True, color=['#4C72B0', '#DD8452'], edgecolor='black', figsize=(10, 5)
+)
+plt.title('Proportion of Income Brackets by Years of Education (education.num)')
+plt.xlabel('Years of Education (education.num)')
+plt.ylabel('Proportion')
+plt.legend(title='Income Bracket', labels=['<=50K', '>50K'])
+plt.xticks(rotation=0)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.savefig('education_vs_income.png', dpi=300)
+plt.close()
+
