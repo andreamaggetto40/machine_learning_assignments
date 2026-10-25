@@ -3,47 +3,87 @@ from scipy.io import arff
 import numpy as np
 import matplotlib.pyplot as plt
 
-# income-adult-predictor
-
-# dataset load
+# ==========================================
+# 1. DATASET LOAD & PRE-PROCESSING
+# ==========================================
 dataset_path = "data/income-adult-predictor"
 data, meta = arff.loadarff(dataset_path)
-
-# convert to pandas dataframe
 df = pd.DataFrame(data)
 
-# ? = missing value. Pre-processing of the dataset to change ? into NaN
+# Decode byte-strings to standard UTF-8 strings and strip padding spaces
+for col in df.select_dtypes(include=[object]).columns:
+    if isinstance(df[col].iloc[0], bytes):
+        df[col] = df[col].str.decode('utf-8').str.strip()
 
+# Replace '?' missing placeholders with NaN
 df = df.replace("?", np.nan)
 
-# dataset properties
 
-# sample and features amount
-sample_amount = df.shape[0]
-features_amount = df.shape[1]
+# ==========================================
+# 2. DESCRIBING THE DATASET
+# ==========================================
+print("\n" + "="*40)
+print("2. DESCRIBING THE DATASET")
+print("="*40)
 
-# features types
-features_types = df.dtypes
-print(features_types)
+print("\n--- Dataset Shape & Info ---")
+print(f"Total rows: {df.shape[0]}, Total columns: {df.shape[1]}")
+df.info()
 
-# unique values for key categorical columns
-print("income unique values", df["income"].unique())
-print("sex unique values:", df["sex"].unique())
-print("workclass unique values:", df["workclass"].unique())
+print("\n--- Summary Statistics (Numerical) ---")
+print(df.describe())
 
-# value counts for income feature
-print("income value counts:", df["income"].value_counts())
+print("\n--- Summary Statistics (Categorical) ---")
+print(df.describe(include=["O"]))  # 'O' handles string/categorical object columns
 
-# global numerical min and max across all numerical features
+
+# ==========================================
+# 3. ADDITIONAL PROPERTIES & CHECKS
+# ==========================================
+print("\n" + "="*40)
+print("3. FEATURE INSPECTION")
+print("="*40)
+
+print("Income unique values:", df["income"].unique())
+print("Sex unique values:", df["sex"].unique())
+print("Workclass unique values:", df["workclass"].unique())
+
 print("Global minimum value across all numerical features:", df.min(numeric_only=True).min())
 print("Global maximum value across all numerical features:", df.max(numeric_only=True).max())
 
-# missing values amount 
-print("missing values amount: " , df.isna().sum())
-print("non-missing values amount : " , df.notna().sum())
 
-# plot of income feature distribution
+# ==========================================
+# 4. DATA ISSUES AUDIT
+# ==========================================
+print("\n" + "="*40)
+print("4. DATA ISSUES AUDIT")
+print("="*40)
 
+# 1. Missing Values Check
+print("--- Missing Values per Column ---")
+missing_counts = df.isnull().sum()
+missing_percentage = (df.isnull().mean() * 100).round(2)
+missing_df = pd.DataFrame(
+    {"Missing Count": missing_counts, "Percentage (%)": missing_percentage}
+)
+print(missing_df[missing_df["Missing Count"] > 0])
+
+# 2. Duplicate Rows Check
+print("\n--- Duplicate Rows ---")
+print(f"Number of duplicate rows: {df.duplicated().sum()}")
+
+# 3. Target Variable Class (Income) Check
+print("\n--- Target Variable Distribution (Income) ---")
+print(df["income"].value_counts())
+print("\nPercentage Breakdown:")
+print((df["income"].value_counts(normalize=True) * 100).round(2))
+
+
+# ==========================================
+# 5. EXPLORATORY DATA ANALYSIS PLOTS
+# ==========================================
+
+# Plot 1: Target Feature Distribution (Income)
 plt.figure(figsize=(6, 4))
 df['income'].value_counts().plot(kind='bar', color=['#4C72B0', '#DD8452'], edgecolor='black')
 plt.title('Target Class Distribution: Income')
@@ -55,8 +95,7 @@ plt.tight_layout()
 plt.savefig('target_distribution.png', dpi=300)  
 plt.close()                                    
 
-# hours.per.week feature distribution plot
-
+# Plot 2: Hours Per Week Feature Distribution
 plt.figure(figsize=(8, 4))
 df['hours.per.week'].dropna().hist(bins=20, edgecolor='black', color='skyblue', grid=False)
 plt.title('Distribution of Hours Worked Per Week')
@@ -67,8 +106,7 @@ plt.tight_layout()
 plt.savefig('hours_distribution.png', dpi=300)
 plt.close()
 
-# education vs income relationship plot
-
+# Plot 3: Education vs. Income Relationship
 plt.figure(figsize=(10, 5))
 pd.crosstab(df['education.num'], df['income'], normalize='index').plot(
     kind='bar', stacked=True, color=['#4C72B0', '#DD8452'], edgecolor='black', figsize=(10, 5)
@@ -83,3 +121,4 @@ plt.tight_layout()
 plt.savefig('education_vs_income.png', dpi=300)
 plt.close()
 
+print("\nAll description metrics, data audits, and plots completed successfully!")
